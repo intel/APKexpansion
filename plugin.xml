@@ -12,6 +12,7 @@
     <preference name="MAIN_VERSION" />
     <preference name="PATCH_VERSION" />
     <preference name="FILE_SIZE" />
+    <preference name="YOUR_PUBLICKEY" />
 
     <js-module src="www/xapkreader.js" name="XAPKReader">
         <clobbers target="XAPKReader" />
@@ -19,18 +20,23 @@
 
     <platform name="android">
 
+        <framework src="AndroidLibrary/GoogleExtras/play_licensing/library" custom="true" />
+        <framework src="AndroidLibrary/GoogleExtras/play_apk_expansion/downloader_library" custom="true"/>
+        <framework src="AndroidLibrary/GoogleExtras/play_apk_expansion/zip_file" custom="true" />
+        
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="XAPKReader">
                 <param name="android-package" value="org.apache.cordova.xapkreader.XAPKReader"/>
                 <param name="onload" value="true" />
             </feature>
-        </config-file>
+        </config-file>     
 
         <source-file src="src/android/res/values/xapkreader.xml" target-dir="res/values" />
         <config-file target="res/values/xapkreader.xml" parent="/*">
             <integer name="main_version">$MAIN_VERSION</integer>
             <integer name="patch_version">$PATCH_VERSION</integer>
             <integer name="file_size">$FILE_SIZE</integer>
+            <string name="your_publickey">$YOUR_PUBLICKEY</string>
         </config-file>
 
         <source-file src="src/android/XAPKReader.java" target-dir="src/org/apache/cordova/xapkreader" />
@@ -60,12 +66,6 @@
             <service android:name=".XAPKDownloaderService" />
             <receiver android:name=".XAPKAlarmReceiver" />
         </config-file>
-
-        <info>
-        You need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
-
-        You need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
-        </info>
 
     </platform>
 

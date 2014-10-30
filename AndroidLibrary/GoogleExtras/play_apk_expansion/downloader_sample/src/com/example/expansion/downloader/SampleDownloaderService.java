@@ -1,4 +1,20 @@
-package org.apache.cordova.xapkreader;
+/*
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.expansion.downloader;
 
 import com.google.android.vending.expansion.downloader.impl.DownloaderService;
 
@@ -6,15 +22,13 @@ import com.google.android.vending.expansion.downloader.impl.DownloaderService;
  * This class demonstrates the minimal client implementation of the
  * DownloaderService from the Downloader library.
  */
-public class XAPKDownloaderService extends DownloaderService {
-
+public class SampleDownloaderService extends DownloaderService {
     // stuff for LVL -- MODIFY FOR YOUR APPLICATION!
-    private final String BASE64_PUBLIC_KEY = getResources().getString(getResources().getIdentifier("your_publickey", "string", getPackageName()));
-
-
+    private static final String BASE64_PUBLIC_KEY = "REPLACE THIS WITH YOUR PUBLIC KEY";
     // used by the preference obfuscater
     private static final byte[] SALT = new byte[] {
-        1, 43, -12, -1, 54, 98, -100, -12, 43, 2, -8, -4, 9, 5, -106, -108, -33, 45, -1, 84
+            1, 43, -12, -1, 54, 98,
+            -100, -12, 43, 2, -8, -4, 9, 5, -106, -108, -33, 45, -1, 84
     };
 
     /**
@@ -43,7 +57,7 @@ public class XAPKDownloaderService extends DownloaderService {
      */
     @Override
     public String getAlarmReceiverClassName() {
-        return XAPKAlarmReceiver.class.getName();
+        return SampleAlarmReceiver.class.getName();
     }
 
 }

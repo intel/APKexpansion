@@ -1,6 +1,5 @@
 package org.apache.cordova.xapkreader;
 
-import io.cordova.hellocordova.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -89,7 +88,7 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
                     // Shows download progress
                     mProgressDialog = new ProgressDialog(XAPKDownloaderActivity.this);
                     mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    mProgressDialog.setMessage(getResources().getString(R.string.downloading_assets));
+                    mProgressDialog.setMessage(getResources().getString(getResources().getIdentifier("downloading_assets", "string", getPackageName())));
                     mProgressDialog.setCancelable(false);
                     mProgressDialog.show();
                     return;
@@ -173,7 +172,7 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
                 break;
             case STATE_COMPLETED: // The download was finished
                 // validateXAPKZipFiles();
-                mProgressDialog.setMessage(getResources().getString(R.string.preparing_assets));
+                mProgressDialog.setMessage(getResources().getString(getResources().getIdentifier("preparing_assets", "string", getPackageName())));
                 // dismiss progress dialog
                 mProgressDialog.dismiss();
                 // finish activity
@@ -185,9 +184,9 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
             case STATE_FAILED_CANCELED:
             case STATE_FAILED:
                 Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle(getResources().getString(R.string.error));
-                alert.setMessage(getResources().getString(R.string.download_failed));
-                alert.setNeutralButton(getResources().getString(R.string.close), null);
+                alert.setTitle(getResources().getString(getResources().getIdentifier("error", "string", getPackageName())));
+                alert.setMessage(getResources().getString(getResources().getIdentifier("download_failed", "string", getPackageName())));
+                alert.setNeutralButton(getResources().getString(getResources().getIdentifier("close", "string", getPackageName())), null);
                 alert.show();
                 break;
         }
