@@ -56,55 +56,58 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
         boolean mainVersion = this.getIntent().getIntExtra("mainVersion", 1) > 0 ? true : false;
         int patchVersion = this.getIntent().getIntExtra("patchVersion", 1);
         long fileSize = this.getIntent().getLongExtra("fileSize", 0L);
+        boolean downloadOption = this.getIntent().getBooleanExtra("downloadOption",true); 
 
         // Check if expansion files are available before going any further
         if (!expansionFilesDelivered(mainVersion, patchVersion, fileSize)) {
 
-            try {
-                Intent launchIntent = this.getIntent();
+            if(downloadOption == true) {
+                try {
+                    Intent launchIntent = this.getIntent();
 
-                // Build an Intent to start this activity from the Notification
-                Intent notifierIntent = new Intent(XAPKDownloaderActivity.this, XAPKDownloaderActivity.this.getClass());
-                notifierIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                notifierIntent.setAction(launchIntent.getAction());
+                    // Build an Intent to start this activity from the Notification
+                    Intent notifierIntent = new Intent(XAPKDownloaderActivity.this, XAPKDownloaderActivity.this.getClass());
+                    notifierIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    notifierIntent.setAction(launchIntent.getAction());
 
-                if (launchIntent.getCategories() != null) {
-                    for (String category : launchIntent.getCategories()) {
-                        notifierIntent.addCategory(category);
+                    if (launchIntent.getCategories() != null) {
+                        for (String category : launchIntent.getCategories()) {
+                            notifierIntent.addCategory(category);
+                        }
+                    }
+
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifierIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    // Start the download service (if required)
+                    Log.v(LOG_TAG, "Start the download service");
+                    int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(this, pendingIntent, XAPKDownloaderService.class);
+
+                    // If download has started, initialize activity to show progress
+                    if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
+                        Log.v(LOG_TAG, "initialize activity to show progress");
+                        // Instantiate a member instance of IStub
+                        mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, XAPKDownloaderService.class);
+                        // Shows download progress
+                        mProgressDialog = new ProgressDialog(XAPKDownloaderActivity.this);
+                        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        mProgressDialog.setMessage(getResources().getString(getResources().getIdentifier("downloading_assets", "string", getPackageName())));
+                        mProgressDialog.setCancelable(false);
+                        mProgressDialog.show();
+                        return;
+                    }
+                    // If the download wasn't necessary, fall through to start the app
+                    else {
+                        Log.v(LOG_TAG, "No download required");
                     }
                 }
-
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifierIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // Start the download service (if required)
-                Log.v(LOG_TAG, "Start the download service");
-                int startResult = DownloaderClientMarshaller.startDownloadServiceIfRequired(this, pendingIntent, XAPKDownloaderService.class);
-
-                // If download has started, initialize activity to show progress
-                if (startResult != DownloaderClientMarshaller.NO_DOWNLOAD_REQUIRED) {
-                    Log.v(LOG_TAG, "initialize activity to show progress");
-                    // Instantiate a member instance of IStub
-                    mDownloaderClientStub = DownloaderClientMarshaller.CreateStub(this, XAPKDownloaderService.class);
-                    // Shows download progress
-                    mProgressDialog = new ProgressDialog(XAPKDownloaderActivity.this);
-                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    mProgressDialog.setMessage(getResources().getString(getResources().getIdentifier("downloading_assets", "string", getPackageName())));
-                    mProgressDialog.setCancelable(false);
-                    mProgressDialog.show();
-                    return;
+                catch (NameNotFoundException e) {
+                    Log.e(LOG_TAG, "Cannot find own package! MAYDAY!");
+                    e.printStackTrace();
                 }
-                // If the download wasn't necessary, fall through to start the app
-                else {
-                    Log.v(LOG_TAG, "No download required");
+                catch (Exception e) {
+                    Log.e(LOG_TAG, e.getMessage());
+                    e.printStackTrace();
                 }
-            }
-            catch (NameNotFoundException e) {
-                Log.e(LOG_TAG, "Cannot find own package! MAYDAY!");
-                e.printStackTrace();
-            }
-            catch (Exception e) {
-                Log.e(LOG_TAG, e.getMessage());
-                e.printStackTrace();
             }
 
         }

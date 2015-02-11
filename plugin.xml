@@ -13,6 +13,7 @@
     <preference name="PATCH_VERSION" />
     <preference name="FILE_SIZE" />
     <preference name="YOUR_PUBLICKEY" />
+    <preference name="DOWNLOAD_OPTION" />
 
     <js-module src="www/xapkreader.js" name="XAPKReader">
         <clobbers target="XAPKReader" />
@@ -37,6 +38,7 @@
             <integer name="patch_version">$PATCH_VERSION</integer>
             <integer name="file_size">$FILE_SIZE</integer>
             <string name="your_publickey">$YOUR_PUBLICKEY</string>
+            <bool name="download_option">$DOWNLOAD_OPTION</bool>
         </config-file>
 
         <source-file src="src/android/XAPKReader.java" target-dir="src/org/apache/cordova/xapkreader" />

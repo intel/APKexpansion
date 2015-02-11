@@ -34,6 +34,8 @@ public class XAPKReader extends CordovaPlugin {
 
     private long fileSize = 0L;
 
+    private boolean downloadOption = true;
+
     @Override
     public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
 
@@ -46,10 +48,14 @@ public class XAPKReader extends CordovaPlugin {
         int fileSizeId = cordova.getActivity().getResources().getIdentifier("file_size", "integer", cordova.getActivity().getPackageName());
         fileSize = cordova.getActivity().getResources().getInteger(fileSizeId);
 
+        int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
+        downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
+
         final Bundle bundle = new Bundle();
         bundle.putInt("mainVersion", mainVersion);
         bundle.putInt("patchVersion", patchVersion);
         bundle.putLong("fileSize", fileSize);
+        bundle.putBoolean("downloadOption", downloadOption);
 
         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override

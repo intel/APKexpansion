@@ -1,9 +1,11 @@
 var exec = require("cordova/exec");
+var getQueue = [];
+var inProgress = 0;
 
 module.exports = {
 
     /**
-     * Get a file in expansion file and return it as data base64 encoded
+     * Get a file immediately in expansion file
      *
      * @param filename              The file name
      * @param fileType              The file type (eg: "image/jpeg")
@@ -12,7 +14,7 @@ module.exports = {
      * @param errorCallback         The callback to be called if there is an error.
      *                                  errorCallback(int errorCode) - OPTIONAL
      **/
-    get: function(filename, successCallback, errorCallback, fileType) {
+    getImmediate: function(filename, successCallback, errorCallback, fileType) {
         // only for android
         if (!navigator.userAgent.match(/Android/i)) {
             return successCallback(filename);
@@ -36,6 +38,54 @@ module.exports = {
         };
 
         cordova.exec(success, errorCallback, "XAPKReader", "get", [filename]);
+    },
+
+    /**
+     * Adds queue to retrieve at most 10 get’s simultaneously.
+     **/               
+    processQueue:  function() {
+        while (inProgress < 10) {
+            var e = getQueue.pop();
+            if (!e) break;
+            inProgress = inProgress + 1;
+            this.getImmediate(e.filename, e.successCallback, e.errorCallBack, e.fileType);      
+        }
+    },
+
+    /**
+     * Get a file in expansion file and return it as data base64 encoded
+     *
+     * @param filename              The file name
+     * @param fileType              The file type (eg: "image/jpeg")
+     * @param successCallback       The callback to be called when the file is found.
+     *                                  successCallback()
+     * @param errorCallback         The callback to be called if there is an error.
+     *                                  errorCallback(int errorCode) - OPTIONAL
+     **/
+    get: function(filename, successCallback, errorCallBack, fileType) {
+        var self = this;
+        
+        getQueue.push({filename: filename,
+        successCallback: function (x) {
+            successCallback(x); 
+            self.getFinished();
+        },
+        errorCallBack: function(x) {
+            errorCallBack(x); 
+            self.getFinished();
+        },
+        fileType: fileType});
+        
+        this.processQueue();
+    },
+    
+    /**
+     * Progress queue termination of 10 gets
+     **/
+    getFinished: function() {
+        console.log('getfinished');
+        inProgress = inProgress - 1;
+        this.processQueue();  
     },
 
     /**
