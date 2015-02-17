@@ -10,24 +10,14 @@ The plugin is an implementation of the process described here : [APK Expansion F
 This plugin use the Cordova CLI's plugin command. To install it to your application, simply execute the following (and replace variables).
 
 ```
-cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable PATCH_VERSION=1 --variable FILE_SIZE=1095520
+cordova plugin add org.apache.cordova.xapkreader --variable MAIN_FILE=true --variable VERSION_CODE=1 --variable FILE_SIZE=1095520 --variable YOUR_PUBLICKEY="your own application publickkey" --variable DOWNLOAD_OPTION=true
 ```
 
-- `MAIN_VERSION` :  Can be `1` or `0`. Define if your APK expansion file is the main file or a patch.
-- `PATCH_VERSION` :  The version of your expansion file.
+- `MAIN_FILE` :  Can be `true` or `false`. Define if your APK expansion file is the main(true) file or a patch(false).
+- `VERSION_CODE` :  The version of your expansion file.
 - `FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
-
-After installation you need to edit `src/org/apache/cordova/xapkreader/XAPKDownloaderService.java` to put your own application public key.
-
-Further, you need to add the your application the __Downloader Library__ and __APK Expansion Zip Library__ from the `Android Extras` section using the Android SDK manager (run `android`).
-
-This libraries are respectively located in :
-- APK Expansion Zip Library : `<sdk>/extras/google/google_market_apk_expansion/zip_file/`
-- Downloader Library : `<sdk>/extras/google/market_apk_expansion/downloader_library/`
-
-Note that the Downloader Library require the __Google Play Licensing Library__ located in `<sdk>/extras/google/market_licensing/`.
-
-You can find an explanation on how to do this in the following page : [Preparing to use the Downloader Library](http://developer.android.com/google/play/expansion-files.html#Preparing)
+- `YOUR_PUBLICKEY` : Your own application public key.
+- `DOWNLOAD_OPTION` : Can be `true` or `false`. Define if your APK expansion file is downloaded from the play store(true) or manually add it(false). The false option is mainly for testing purpose.
 
 # Using
 
