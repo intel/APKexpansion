@@ -9,9 +9,6 @@
     <license>Apache 2.0</license>
     <keywords>cordova,apk,expansion,file,xapk,xapkreader</keywords>
 
-    <preference name="MAIN_FILE" />
-    <preference name="VERSION_CODE" />
-    <preference name="FILE_SIZE" />
     <preference name="YOUR_PUBLICKEY" />
     <preference name="DOWNLOAD_OPTION" />
 
@@ -34,14 +31,7 @@
 
         <source-file src="src/android/res/values/xapkreader.xml" target-dir="res/values" />
         <config-file target="res/values/xapkreader.xml" parent="/*">
-            <!-- MAIN_FILE = true means MAIN_VERSION of the exapnsion file is choosen and
-              MAIN_FILE = false means PATCH_VERSION of the expansion file is choosen. -->
-            <bool name="main_file">$MAIN_FILE</bool>
-            <integer name="version_code">$VERSION_CODE</integer>
-            <integer name="file_size">$FILE_SIZE</integer>
-            <string name="your_publickey">$YOUR_PUBLICKEY</string>
-            <!-- DOWNLOAD_OPTION = true, the expansion file is downloded from the Play Store and
-              DOWNLOAD_OPTION = false mandates the expansion file to be loaded manully. -->
+            <string name="your_publickey">$YOUR_PUBLICKEY</string> 
             <bool name="download_option">$DOWNLOAD_OPTION</bool>
         </config-file>
 

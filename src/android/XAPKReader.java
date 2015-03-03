@@ -36,40 +36,6 @@ public class XAPKReader extends CordovaPlugin {
 
     private boolean downloadOption = true;
 
-    @Override
-    public void initialize(final CordovaInterface cordova, CordovaWebView webView) {
-
-        int mainFileId = cordova.getActivity().getResources().getIdentifier("main_file", "bool", cordova.getActivity().getPackageName());
-        mainFile = cordova.getActivity().getResources().getBoolean(mainFileId);
-
-        int versionCodeId = cordova.getActivity().getResources().getIdentifier("version_code", "integer", cordova.getActivity().getPackageName());
-        versionCode = cordova.getActivity().getResources().getInteger(versionCodeId);
-
-        int fileSizeId = cordova.getActivity().getResources().getIdentifier("file_size", "integer", cordova.getActivity().getPackageName());
-        fileSize = cordova.getActivity().getResources().getInteger(fileSizeId);
-
-        int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
-        downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
-
-        final Bundle bundle = new Bundle();
-        bundle.putBoolean("mainFile", mainFile);
-        bundle.putInt("versionCode", versionCode);
-        bundle.putLong("fileSize", fileSize);
-        bundle.putBoolean("downloadOption", downloadOption);
-
-        cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Context context = cordova.getActivity().getApplicationContext();
-                Intent intent = new Intent(context, XAPKDownloaderActivity.class);
-                intent.putExtras(bundle);
-                cordova.getActivity().startActivity(intent);
-            }
-        });
-
-        super.initialize(cordova, webView);
-    }
-
     /**
      * Executes the request.
      *
@@ -89,12 +55,30 @@ public class XAPKReader extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
+        int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
+        downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
+
+        mainFile = args.getBoolean(1);
+        versionCode = args.getInt(2);
+        fileSize = args.getLong(3);
+
+        final Bundle bundle = new Bundle();
+        bundle.putBoolean("mainFile", mainFile);
+        bundle.putInt("versionCode", versionCode);
+        bundle.putLong("fileSize", fileSize);
+        bundle.putBoolean("downloadOption", downloadOption);
+
         if (action.equals("get")) {
             final String filename = args.getString(0);
-            final Context ctx = cordova.getActivity().getApplicationContext();
+            final Context ctx = cordova.getActivity().getApplicationContext();     
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                     try {
+                        Context context = cordova.getActivity().getApplicationContext();
+                        Intent intent = new Intent(context, XAPKDownloaderActivity.class);
+                        intent.putExtras(bundle);
+                        cordova.getActivity().startActivity(intent);
                         // Read file
                         PluginResult result = XAPKReader.readFile(ctx, filename, mainFile, versionCode, PluginResult.MESSAGE_TYPE_ARRAYBUFFER);
                         callbackContext.sendPluginResult(result);

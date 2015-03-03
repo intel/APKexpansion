@@ -8,13 +8,16 @@ module.exports = {
      * Get a file immediately in expansion file
      *
      * @param filename              The file name
+     * @param mainFile              The mainfile option - true(mainFile); false(patchFile)
+     * @param versionCode           The versionCode - of main or patch file
+     * @param fileSize              The size of the expansion file.
      * @param fileType              The file type (eg: "image/jpeg")
      * @param successCallback       The callback to be called when the file is found.
      *                                  successCallback()
      * @param errorCallback         The callback to be called if there is an error.
      *                                  errorCallback(int errorCode) - OPTIONAL
      **/
-    getImmediate: function(filename, successCallback, errorCallback, fileType) {
+    getImmediate: function(filename, mainFile, versionCode, fileSize, successCallback, errorCallback, fileType) {
         // only for android
         if (!navigator.userAgent.match(/Android/i)) {
             return successCallback(filename);
@@ -22,6 +25,21 @@ module.exports = {
 
         if (null === filename) {
             console.error("XAPKReader.get failure: filename parameter needed");
+            return;
+        }
+
+        if (null === mainFile) {
+            console.error("XAPKReader.get failure: MainFile parameter needed");
+            return;
+        }
+
+        if (null === versionCode) {
+            console.error("XAPKReader.get failure: versionCode parameter needed");
+            return;
+        }
+
+        if (null === fileSize) {
+            console.error("XAPKReader.get failure: fileSize parameter needed");
             return;
         }
 
@@ -37,7 +55,7 @@ module.exports = {
             }
         };
 
-        cordova.exec(success, errorCallback, "XAPKReader", "get", [filename]);
+        cordova.exec(success, errorCallback, "XAPKReader", "get", [filename,mainFile,versionCode,fileSize]);
     },
 
     /**
@@ -48,7 +66,7 @@ module.exports = {
             var e = getQueue.pop();
             if (!e) break;
             inProgress = inProgress + 1;
-            this.getImmediate(e.filename, e.successCallback, e.errorCallBack, e.fileType);      
+            this.getImmediate(e.filename, e.mainFile, e.versionCode, e.fileSize, e.successCallback, e.errorCallBack, e.fileType);      
         }
     },
 
@@ -56,16 +74,19 @@ module.exports = {
      * Get a file in expansion file and return it as data base64 encoded
      *
      * @param filename              The file name
+     * @param mainFile              The mainfile option - true(mainFile); false(patchFile)
+     * @param versionCode           The versionCode - of main or patch file
+     * @param fileSize              The size of the expansion file.
      * @param fileType              The file type (eg: "image/jpeg")
      * @param successCallback       The callback to be called when the file is found.
      *                                  successCallback()
      * @param errorCallback         The callback to be called if there is an error.
      *                                  errorCallback(int errorCode) - OPTIONAL
      **/
-    get: function(filename, successCallback, errorCallBack, fileType) {
+    get: function(filename, mainFile, versionCode, fileSize, successCallback, errorCallBack, fileType) {
         var self = this;
         
-        getQueue.push({filename: filename,
+        getQueue.push({filename: filename, mainFile: mainFile, versionCode: versionCode, fileSize: fileSize,
         successCallback: function (x) {
             successCallback(x); 
             self.getFinished();
