@@ -39,27 +39,36 @@ public class XAPKDownloaderActivity extends Activity implements IDownloaderClien
      *
      * @return true if they are present.
      */
-    boolean expansionFilesDelivered(boolean mainFile, int versionCode, long fileSize) {
-        String fileName = Helpers.getExpansionAPKFileName(this, mainFile, versionCode);
-        if (!Helpers.doesFileExist(this, fileName, fileSize, false)) {
+    boolean expansionFilesDelivered(int mainVersionCode, int patchVersionCode, long mainFileSize, long patchFileSize) {
+        String fileName = Helpers.getExpansionAPKFileName(this, true, mainVersionCode);
+        if (!Helpers.doesFileExist(this, fileName, mainFileSize, false)) {
             Log.e(LOG_TAG, "ExpansionAPKFile doesn't exist or has a wrong size (" + fileName + ").");
             return false;
         }
+        if(patchVersionCode != 0) {
+            fileName = Helpers.getExpansionAPKFileName(this, false, patchVersionCode);
+            if (!Helpers.doesFileExist(this, fileName, patchFileSize, false)) {
+                Log.e(LOG_TAG, "ExpansionAPKFile doesn't exist or has a wrong size (" + fileName + ").");
+                return false;
+            }
+        }
         return true;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        boolean mainFile = this.getIntent().getBooleanExtra("mainFile", true);
-        int versionCode = this.getIntent().getIntExtra("versionCode", 1);
-        long fileSize = this.getIntent().getLongExtra("fileSize", 0L);
+        int mainVersionCode = this.getIntent().getIntExtra("mainVersionCode", 1);
+        int patchVersionCode = this.getIntent().getIntExtra("patchVersionCode", 0);
+        long mainFileSize = this.getIntent().getLongExtra("mainFileSize", 0L);
+        long patchFileSize = this.getIntent().getLongExtra("patchFileSize", 0L);
         boolean downloadOption = this.getIntent().getBooleanExtra("downloadOption",true); 
 
         // Check if expansion files are available before going any further
-        if (!expansionFilesDelivered(mainFile, versionCode, fileSize)) {
+        if (!expansionFilesDelivered(mainVersionCode, patchVersionCode, mainFileSize, patchFileSize)) {
 
             if(downloadOption == true) {
                 try {

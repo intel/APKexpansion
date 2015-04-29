@@ -10,12 +10,13 @@ The plugin is an implementation of the process described here : [APK Expansion F
 This plugin use the Cordova CLI's plugin command. To install it to your application, simply execute the following (and replace variables).
 
 ```
-cordova plugin add org.apache.cordova.xapkreader --variable MAIN_FILE=true --variable VERSION_CODE=1 --variable FILE_SIZE=1095520 --variable YOUR_PUBLICKEY="your own application publickkey" --variable DOWNLOAD_OPTION=true
+cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable MAIN_FILESIZE=12345 --variable PATCH_VERSION=0 --variable PATCH_FILESIZE=0 --variable YOUR_PUBLICKEY="your own application publickkey" --variable DOWNLOAD_OPTION=true
 ```
 
-- `MAIN_FILE` :  Can be `true` or `false`. Define if your APK expansion file is the main(true) file or a patch(false).
-- `VERSION_CODE` :  The version of your expansion file.
-- `FILE_SIZE` : The byte size of your expansion file. This is used to verify the intégrity of the file after downloading.
+- `MAIN_VERSION` :  The version of your main expansion file. Can be 1 or >1.
+- `PATCH_VERSION` :  The version of your patch expansion file. Should be 0 if no patch exists.
+- `MAIN_FILESIZE` : The byte size of your main expansion file. This is used to verify the intégrity of the file after downloading.
+- `PATCH_FILESIZE` : The byte size of your patch expansion file. Should be 0, if no patch exists.
 - `YOUR_PUBLICKEY` : Your own application public key.
 - `DOWNLOAD_OPTION` : Can be `true` or `false`. Define if your APK expansion file is downloaded from the play store(true) or manually add it(false). The false option is mainly for testing purpose.
 

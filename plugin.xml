@@ -9,6 +9,10 @@
     <license>Apache 2.0</license>
     <keywords>cordova,apk,expansion,file,xapk,xapkreader</keywords>
 
+    <preference name="MAIN_VERSION" />
+    <preference name="PATCH_VERSION" />
+    <preference name="MAIN_FILESIZE" />
+    <preference name="PATCH_FILESIZE" />
     <preference name="YOUR_PUBLICKEY" />
     <preference name="DOWNLOAD_OPTION" />
 
@@ -31,6 +35,10 @@
 
         <source-file src="src/android/res/values/xapkreader.xml" target-dir="res/values" />
         <config-file target="res/values/xapkreader.xml" parent="/*">
+            <integer name="main_version">$MAIN_VERSION</integer>
+            <integer name="patch_version">$PATCH_VERSION</integer>
+            <integer name="main_filesize">$MAIN_FILESIZE</integer>
+            <integer name="patch_filesize">$PATCH_FILESIZE</integer>
             <string name="your_publickey">$YOUR_PUBLICKEY</string> 
             <bool name="download_option">$DOWNLOAD_OPTION</bool>
         </config-file>

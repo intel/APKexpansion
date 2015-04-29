@@ -28,11 +28,13 @@ public class XAPKReader extends CordovaPlugin {
 
     private static final String LOG_TAG = "XAPKReader";
 
-    private boolean mainFile = true;
+    private int mainVersion = 1;
 
-    private int versionCode = 1;
+    private long mainFileSize = 0L;
 
-    private long fileSize = 0L;
+    private int patchVersion = 0;
+
+    private long patchFileSize = 0L;
 
     private boolean downloadOption = true;
 
@@ -59,14 +61,24 @@ public class XAPKReader extends CordovaPlugin {
         int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
         downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
 
-        mainFile = args.getBoolean(1);
-        versionCode = args.getInt(2);
-        fileSize = args.getLong(3);
+        int mainversionCodeId = cordova.getActivity().getResources().getIdentifier("main_version", "integer", cordova.getActivity().getPackageName());
+        mainVersion = cordova.getActivity().getResources().getInteger(mainversionCodeId);
+
+        int mainFileSizeId = cordova.getActivity().getResources().getIdentifier("main_filesize", "integer", cordova.getActivity().getPackageName());
+        mainFileSize = cordova.getActivity().getResources().getInteger(mainFileSizeId);
+
+        //This is where the error may occur.
+        int patchVersionCodeId = cordova.getActivity().getResources().getIdentifier("patch_version", "integer", cordova.getActivity().getPackageName());
+        patchVersion = cordova.getActivity().getResources().getInteger(patchVersionCodeId);
+
+        int patchFileSizeId = cordova.getActivity().getResources().getIdentifier("patch_filesize", "integer", cordova.getActivity().getPackageName());
+        patchFileSize = cordova.getActivity().getResources().getInteger(patchFileSizeId);
 
         final Bundle bundle = new Bundle();
-        bundle.putBoolean("mainFile", mainFile);
-        bundle.putInt("versionCode", versionCode);
-        bundle.putLong("fileSize", fileSize);
+        bundle.putInt("mainVersion", mainVersion);
+        bundle.putInt("patchVersion", patchVersion);
+        bundle.putLong("mainFileSize", mainFileSize);
+        bundle.putLong("patchFileSize", patchFileSize);
         bundle.putBoolean("downloadOption", downloadOption);
 
         if (action.equals("get")) {
@@ -80,7 +92,7 @@ public class XAPKReader extends CordovaPlugin {
                         intent.putExtras(bundle);
                         cordova.getActivity().startActivity(intent);
                         // Read file
-                        PluginResult result = XAPKReader.readFile(ctx, filename, mainFile, versionCode, PluginResult.MESSAGE_TYPE_ARRAYBUFFER);
+                        PluginResult result = XAPKReader.readFile(ctx, filename, mainVersion, patchVersion, PluginResult.MESSAGE_TYPE_ARRAYBUFFER);
                         callbackContext.sendPluginResult(result);
                     }
                     catch(Exception e) {
@@ -101,9 +113,9 @@ public class XAPKReader extends CordovaPlugin {
      * @param filename The filename to read
      * @return         PluginResult
      */
-    private static PluginResult readFile(Context ctx, String filename, boolean mainFile, int versionCode, final int resultType) throws IOException {
+    private static PluginResult readFile(Context ctx, String filename, int mainVersion, int patchVersion, final int resultType) throws IOException {
         // Get APKExpensionFile
-        ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, versionCode, versionCode);
+        ZipResourceFile expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, mainVersion, patchVersion);
 
         if (null == expansionFile) {
             Log.e(LOG_TAG, "APKExpansionFile not found.");
@@ -111,7 +123,7 @@ public class XAPKReader extends CordovaPlugin {
         }
 
         // Find file in ExpansionFile
-        String fileName = Helpers.getExpansionAPKFileName(ctx, true, versionCode);
+        String fileName = Helpers.getExpansionAPKFileName(ctx, true, mainVersion);
         fileName = fileName.substring(0, fileName.lastIndexOf("."));
         AssetFileDescriptor fileDescriptor = expansionFile.getAssetFileDescriptor(fileName + "/" + filename);
 
@@ -119,8 +131,8 @@ public class XAPKReader extends CordovaPlugin {
 			fileDescriptor = expansionFile.getAssetFileDescriptor(filename);
 			if (null == fileDescriptor) {
 				Log.e(LOG_TAG, "File not found (" + filename + ").");
-				return null;
-			}
+                return null;
+            }
         }
 
         // Read file
