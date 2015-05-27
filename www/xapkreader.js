@@ -119,9 +119,7 @@ module.exports = {
         catch (e) {
             // TypeError try old constructor
             window.BlobBuilder = window.BlobBuilder ||
-                window.WebKitBlobBuilder ||
-                window.MozBlobBuilder ||
-                window.MSBlobBuilder;
+                window.WebKitBlobBuilder;
 
             if (e.name == 'TypeError' && !window.BlobBuilder) {
                 throw new Error('This platform does not support Blob type.');

@@ -25,13 +25,13 @@
         <framework src="AndroidLibrary/GoogleExtras/play_licensing/library" custom="true" />
         <framework src="AndroidLibrary/GoogleExtras/play_apk_expansion/downloader_library" custom="true"/>
         <framework src="AndroidLibrary/GoogleExtras/play_apk_expansion/zip_file" custom="true" />
-        
+
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="XAPKReader">
                 <param name="android-package" value="org.apache.cordova.xapkreader.XAPKReader"/>
                 <param name="onload" value="true" />
             </feature>
-        </config-file>     
+        </config-file>
 
         <source-file src="src/android/res/values/xapkreader.xml" target-dir="res/values" />
         <config-file target="res/values/xapkreader.xml" parent="/*">
@@ -39,7 +39,7 @@
             <integer name="patch_version">$PATCH_VERSION</integer>
             <integer name="main_filesize">$MAIN_FILESIZE</integer>
             <integer name="patch_filesize">$PATCH_FILESIZE</integer>
-            <string name="your_publickey">$YOUR_PUBLICKEY</string> 
+            <string name="your_publickey">$YOUR_PUBLICKEY</string>
             <bool name="download_option">$DOWNLOAD_OPTION</bool>
         </config-file>
 
@@ -65,7 +65,6 @@
 
         <config-file target="AndroidManifest.xml" parent="application">
             <activity android:name="org.apache.cordova.xapkreader.XAPKDownloaderActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
-                <intent-filter></intent-filter>
             </activity>
             <service android:name=".XAPKDownloaderService" />
             <receiver android:name=".XAPKAlarmReceiver" />

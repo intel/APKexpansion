@@ -1,0 +1,4 @@
+dependencies {
+    debugCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "debug")
+    releaseCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "release")
+ }
