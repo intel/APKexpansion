@@ -20,6 +20,33 @@ cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --var
 - `YOUR_PUBLICKEY` : Your own application public key.
 - `DOWNLOAD_OPTION` : Can be `true` or `false`. Define if your APK expansion file is downloaded from the play store(true) or manually add it(false). The false option is mainly for testing purpose.
 
+
+##Cordova CLI 5
+
+There is currently a bug in Cordova CLI 5/Cordova Android 4 with naming projects in the settings.gradle file.  All projects are prefixed with the directory path of your project.
+
+```
+include ":org.apache.cordova.xapkreader:foobar-library"
+```
+
+To fix this, open up the platforms/android/org.apache.cordova.xapkreader/foobar-downloader_library/build-extras.gradle file and change
+
+```
+  dependencies {
+       debugCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "debug")
+       releaseCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "release")
+   }
+```
+
+```
+  dependencies {
+       debugCompile project(path: ':org.apache.cordova.xapkreader:foobar-library',configuration: "debug")
+       releaseCompile project(path: ':org.apache.cordova.xapkreader:foobar-library',configuration: "release")
+}
+```   
+
+to 
+
 # Using
 
 The file is returned to a success callback as URL object that you can use like in the example below or with the File API.
