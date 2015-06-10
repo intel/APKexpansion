@@ -10,7 +10,7 @@ The plugin is an implementation of the process described here : [APK Expansion F
 This plugin use the Cordova CLI's plugin command. To install it to your application, simply execute the following (and replace variables).
 
 ```
-cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --variable MAIN_FILESIZE=12345 --variable PATCH_VERSION=0 --variable PATCH_FILESIZE=0 --variable YOUR_PUBLICKEY="your own application publickkey" --variable DOWNLOAD_OPTION=true
+cordova plugin add com.intel.xapkreader --variable MAIN_VERSION=1 --variable MAIN_FILESIZE=12345 --variable PATCH_VERSION=0 --variable PATCH_FILESIZE=0 --variable YOUR_PUBLICKEY="your own application publickkey" --variable DOWNLOAD_OPTION=true
 ```
 
 - `MAIN_VERSION` :  The version of your main expansion file. Can be 1 or >1.
@@ -26,22 +26,22 @@ cordova plugin add org.apache.cordova.xapkreader --variable MAIN_VERSION=1 --var
 There is currently a bug in Cordova CLI 5/Cordova Android 4 with naming projects in the settings.gradle file.  All projects are prefixed with the directory path of your project.
 
 ```
-include ":org.apache.cordova.xapkreader:foobar-library"
+include ":com.intel.xapkreader:foobar-library"
 ```
 
 To fix this, open up the platforms/android/org.apache.cordova.xapkreader/foobar-downloader_library/build-extras.gradle file and change
 
 ```
   dependencies {
-       debugCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "debug")
-       releaseCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "release")
+       debugCompile project(path: ':com.intel.xapkreader:library',configuration: "debug")
+       releaseCompile project(path: ':com.intel.xapkreader:library',configuration: "release")
    }
 ```
 
 ```
   dependencies {
-       debugCompile project(path: ':org.apache.cordova.xapkreader:foobar-library',configuration: "debug")
-       releaseCompile project(path: ':org.apache.cordova.xapkreader:foobar-library',configuration: "release")
+       debugCompile project(path: ':com.intel.xapkreader:foobar-library',configuration: "debug")
+       releaseCompile project(path: ':com.intel.xapkreader:foobar-library',configuration: "release")
 }
 ```   
 
