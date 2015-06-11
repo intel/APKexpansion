@@ -1,14 +1,16 @@
 {
   "name": "APKexpansion",
   "version": "2.0.0",
-  "description": "Cordova plugin to enable APK expansion files",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Access files into APK Expansion Files",
+  "cordova": {
+    "id": "com.intel.xapkreader",
+    "platforms": [
+      "android"
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/01org/APKexpansion.git"
+    "url": "git+https://github.com/01org/APKexpansion.git"
   },
   "keywords": [
     "cordova",
@@ -16,17 +18,20 @@
     "expansion",
     "file",
     "xapk",
-    "xapkreader"
+    "xapkreader",
+    "ecosystem:cordova",
+    "cordova-android"
   ],
   "author": "Quentin Aupetit",
   "contributors": [
     {
-      "name":"Nazia Latif"      
+      "name":"Nazia Latif",
+      "name":"Ian Maffett"
     }
   ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/01org/APKexpansion/issues"
   },
-  "homepage": "https://github.com/01org/APKexpansion"
+  "homepage": "https://github.com/01org/APKexpansion#readme"
 }
