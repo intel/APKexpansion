@@ -1,6 +1,6 @@
 {
   "name": "APKexpansion",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Cordova plugin to enable APK expansion files",
   "main": "index.js",
   "scripts": {
