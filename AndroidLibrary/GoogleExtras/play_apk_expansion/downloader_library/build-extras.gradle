@@ -1,4 +1,4 @@
 dependencies {
-    debugCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "debug")
-    releaseCompile project(path: ':org.apache.cordova.xapkreader:library',configuration: "release")
+    debugCompile project(path: ':com.intel.xapkreader:library',configuration: "debug")
+    releaseCompile project(path: ':com.intel.xapkreader:library',configuration: "release")
  }
