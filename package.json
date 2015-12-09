@@ -1,6 +1,6 @@
 {
-  "name": "APKexpansion",
-  "version": "2.0.0",
+  "name": "com.intel.xapkreader",
+  "version": "2.0.1",
   "description": "Access files into APK Expansion Files",
   "cordova": {
     "id": "com.intel.xapkreader",
