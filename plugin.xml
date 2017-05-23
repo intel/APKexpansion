@@ -64,7 +64,7 @@
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="application">
-            <activity android:name="org.apache.cordova.xapkreader.XAPKDownloaderActivity" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
+            <activity android:name="org.apache.cordova.xapkreader.XAPKDownloaderActivity" android:label="@string/app_name" android:configChanges="keyboardHidden|keyboard|locale">
             </activity>
             <service android:name=".XAPKDownloaderService" />
             <receiver android:name=".XAPKAlarmReceiver" />
