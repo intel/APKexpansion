@@ -59,6 +59,7 @@
             <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
             <!-- Required to read and write the expansion files on shared storage -->
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
             <!-- Required to access Google Play Licensing -->
             <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
         </config-file>
