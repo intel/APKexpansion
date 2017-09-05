@@ -5,6 +5,13 @@ var inProgress = 0;
 module.exports = {
 
     /**
+     * Check for file permissions on new SDK
+     **/
+    checkFilePermissions: function(successCallback, errorCallback) {
+        cordova.exec(successCallback, errorCallback, "XAPKReader", "checkPermissions");
+    },
+
+    /**
      * Get a file immediately in expansion file
      *
      * @param filename              The file name
@@ -42,13 +49,13 @@ module.exports = {
 
     /**
      * Adds queue to retrieve at most 10 get’s simultaneously.
-     **/               
+     **/
     processQueue:  function() {
         while (inProgress < 10) {
             var e = getQueue.pop();
             if (!e) break;
             inProgress = inProgress + 1;
-            this.getImmediate(e.filename, e.successCallback, e.errorCallBack, e.fileType);      
+            this.getImmediate(e.filename, e.successCallback, e.errorCallBack, e.fileType);
         }
     },
 
@@ -64,28 +71,28 @@ module.exports = {
      **/
     get: function(filename, successCallback, errorCallBack, fileType) {
         var self = this;
-        
+
         getQueue.push({filename: filename,
         successCallback: function (x) {
-            successCallback(x); 
+            successCallback(x);
             self.getFinished();
         },
         errorCallBack: function(x) {
-            errorCallBack(x); 
+            errorCallBack(x);
             self.getFinished();
         },
         fileType: fileType});
-        
+
         this.processQueue();
     },
-    
+
     /**
      * Progress queue termination of 10 gets
      **/
     getFinished: function() {
         console.log('getfinished');
         inProgress = inProgress - 1;
-        this.processQueue();  
+        this.processQueue();
     },
 
     /**
