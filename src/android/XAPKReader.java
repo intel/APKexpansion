@@ -42,6 +42,8 @@ public class XAPKReader extends CordovaPlugin {
 
     private boolean downloadOption = true;
 
+    private CallbackContext callbackContext;
+
     /**
      * Executes the request.
      *
@@ -110,27 +112,9 @@ public class XAPKReader extends CordovaPlugin {
 
         if (action.equals("checkPermissions")) {
 
-            XAPKReader.verifyStoragePermissions(cordova.getActivity());
+            this.callbackContext = callbackContext;
 
-            // final String filename = args.getString(0);
-            // final Context ctx = cordova.getActivity().getApplicationContext();
-            // cordova.getThreadPool().execute(new Runnable() {
-            //     public void run() {
-            //         try {
-            //             Context context = cordova.getActivity().getApplicationContext();
-            //             Intent intent = new Intent(context, XAPKDownloaderActivity.class);
-            //             intent.putExtras(bundle);
-            //             cordova.getActivity().startActivity(intent);
-            //             // Read file
-            //             PluginResult result = XAPKReader.readFile(ctx, filename, mainVersion, patchVersion, PluginResult.MESSAGE_TYPE_ARRAYBUFFER);
-            //             callbackContext.sendPluginResult(result);
-            //         }
-            //         catch(Exception e) {
-            //             e.printStackTrace();
-            //             callbackContext.error(e.getLocalizedMessage());
-            //         }
-            //     }
-            // });
+            XAPKReader.verifyStoragePermissions(cordova.getActivity(), callbackContext);
             return true;
         }
         return false;
@@ -211,8 +195,9 @@ public class XAPKReader extends CordovaPlugin {
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity
+     * @param callbackContext The callback context used when calling back into JavaScript.
      */
-    private static void verifyStoragePermissions(Activity activity) {
+    private static void verifyStoragePermissions(Activity activity, final CallbackContext callbackContext) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -223,6 +208,40 @@ public class XAPKReader extends CordovaPlugin {
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+        } else {
+            callbackContext.success();
+        }
+    }
+
+    /**
+     * Permissions Request callback
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+            String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    this.callbackContext.success();
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    this.callbackContext.error();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
