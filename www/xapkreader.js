@@ -1,3 +1,4 @@
+cordova.define("com.intel.xapkreader.XAPKReader", function(require, exports, module) {
 var exec = require("cordova/exec");
 var getQueue = [];
 var inProgress = 0;
@@ -140,3 +141,5 @@ module.exports = {
     }
 
 };
+
+});

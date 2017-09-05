@@ -44,6 +44,13 @@ public class XAPKReader extends CordovaPlugin {
 
     private CallbackContext callbackContext;
 
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     /**
      * Executes the request.
      *
@@ -63,6 +70,8 @@ public class XAPKReader extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
+        this.callbackContext = callbackContext;
 
         int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
         downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
@@ -111,10 +120,14 @@ public class XAPKReader extends CordovaPlugin {
         }
 
         if (action.equals("checkPermissions")) {
-
-            this.callbackContext = callbackContext;
-
-            XAPKReader.verifyStoragePermissions(cordova.getActivity(), callbackContext);
+            if(cordova.hasPermission(PERMISSIONS_STORAGE[1]))
+            {
+                callbackContext.success();
+            }
+            else
+            {
+                getReadPermission();
+            }
             return true;
         }
         return false;
@@ -182,12 +195,10 @@ public class XAPKReader extends CordovaPlugin {
         return result;
     }
 
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+    protected void getReadPermission()
+    {
+        cordova.requestPermissions(this, REQUEST_EXTERNAL_STORAGE, PERMISSIONS_STORAGE);
+    }
 
     /**
      * Checks if the app has permission to write to device storage
@@ -221,27 +232,21 @@ public class XAPKReader extends CordovaPlugin {
      * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-            String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    this.callbackContext.success();
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    this.callbackContext.error();
-                }
+    public void onRequestPermissionResult(int requestCode, String[] permissions,
+                                          int[] grantResults) throws JSONException {
+        for(int r:grantResults)
+        {
+            if(r == PackageManager.PERMISSION_DENIED)
+            {
+                this.callbackContext.error("Expected one non-empty string argument.");
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
+        }
+        switch(requestCode)
+        {
+            case REQUEST_EXTERNAL_STORAGE:
+                this.callbackContext.success();
+                break;
         }
     }
 
