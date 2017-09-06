@@ -47,7 +47,7 @@ public class APKExpansionSupport {
 					}
 				}
 				if ( patchVersion > 0 ) {
-					String strPatchPath = expPath + File.separator + "patch." + mainVersion + "." + packageName + ".obb";
+					String strPatchPath = expPath + File.separator + "patch." + patchVersion + "." + packageName + ".obb";
 					File main = new File(strPatchPath);
 					if ( main.isFile() ) {
 						ret.add(strPatchPath);

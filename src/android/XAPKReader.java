@@ -1,9 +1,13 @@
 package org.apache.cordova.xapkreader;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.util.Log;
 
@@ -38,6 +42,15 @@ public class XAPKReader extends CordovaPlugin {
 
     private boolean downloadOption = true;
 
+    private CallbackContext callbackContext;
+
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     /**
      * Executes the request.
      *
@@ -57,6 +70,8 @@ public class XAPKReader extends CordovaPlugin {
      */
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
+        this.callbackContext = callbackContext;
 
         int downloadOptionId = cordova.getActivity().getResources().getIdentifier("download_option", "bool", cordova.getActivity().getPackageName());
         downloadOption = cordova.getActivity().getResources().getBoolean(downloadOptionId);
@@ -83,7 +98,7 @@ public class XAPKReader extends CordovaPlugin {
 
         if (action.equals("get")) {
             final String filename = args.getString(0);
-            final Context ctx = cordova.getActivity().getApplicationContext();     
+            final Context ctx = cordova.getActivity().getApplicationContext();
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() {
                     try {
@@ -101,6 +116,18 @@ public class XAPKReader extends CordovaPlugin {
                     }
                 }
             });
+            return true;
+        }
+
+        if (action.equals("checkPermissions")) {
+            if(cordova.hasPermission(PERMISSIONS_STORAGE[1]))
+            {
+                callbackContext.success();
+            }
+            else
+            {
+                getReadPermission();
+            }
             return true;
         }
         return false;
@@ -166,6 +193,61 @@ public class XAPKReader extends CordovaPlugin {
         }
 
         return result;
+    }
+
+    protected void getReadPermission()
+    {
+        cordova.requestPermissions(this, REQUEST_EXTERNAL_STORAGE, PERMISSIONS_STORAGE);
+    }
+
+    /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     * @param callbackContext The callback context used when calling back into JavaScript.
+     */
+    private static void verifyStoragePermissions(Activity activity, final CallbackContext callbackContext) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        } else {
+            callbackContext.success();
+        }
+    }
+
+    /**
+     * Permissions Request callback
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionResult(int requestCode, String[] permissions,
+                                          int[] grantResults) throws JSONException {
+        for(int r:grantResults)
+        {
+            if(r == PackageManager.PERMISSION_DENIED)
+            {
+                this.callbackContext.error("Expected one non-empty string argument.");
+                return;
+            }
+        }
+        switch(requestCode)
+        {
+            case REQUEST_EXTERNAL_STORAGE:
+                this.callbackContext.success();
+                break;
+        }
     }
 
 }
